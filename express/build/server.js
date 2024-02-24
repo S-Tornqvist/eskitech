@@ -6,9 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
 const port = 3000;
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
     res.send('Hello, this is Express + TypeScript');
-    console.log(req);
+    console.log(req.method, req.url);
 });
 app.listen(port, () => {
     console.log(`[Server]: I am running at https://localhost:${port}`);
