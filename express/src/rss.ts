@@ -1,29 +1,41 @@
-import { Request, Response } from "express";
+import { Request, RequestHandler, Response } from "express";
 import fs from "fs";
 import csv from "csv-parser";
 import xml from "xmlbuilder";
 
-const CSV_PATH = process.env.PRODUCTS_CSV || "/dev/null";
+/**
+ * Create a rss feed route that feeds data from csv file.
+ *
+ * https://en.wikipedia.org/wiki/RSS
+ */
+export function rssFromCsv(csvPath: string): RequestHandler {
+  // Set on successful csv parse
+  let rss: string | null = null;
 
-if (!process.env.PRODUCTS_CSV) {
-  console.warn("warning: PRODUCTS_CSV is unset in env. using " + CSV_PATH);
-}
+  function onError(error: unknown) {
+    console.error(`ERROR parsing ${csvPath}: `, error);
+    rss = null;
+  }
 
-// Ensure log if csv path is misconfigured
-readCsv(CSV_PATH)
-  .then(makeRss)
-  .catch((reason) => console.error("FAILED TO READ CSV PATH: ", reason));
-
-export function rss(req: Request, res: Response) {
-  readCsv(CSV_PATH)
+  readCsv(csvPath)
     .then((products) => {
-      const rss = makeRss(products);
-      res.send(rss.end({ pretty: true }));
+      try {
+        rss = makeRss(products).end({ pretty: true });
+      } catch (error) {
+        onError(error);
+      }
     })
-    .catch((reason) => {
-      console.error(`ERROR parsing ${CSV_PATH}: `, reason);
-      res.sendStatus(500);
-    });
+    .catch(onError);
+
+  function rssRequestHandler(req: Request, res: Response) {
+    if (rss === null) {
+      res.sendStatus(503); // Service unavailable
+    } else {
+      res.set("Content-Type", "text/xml").send(rss);
+    }
+  }
+
+  return rssRequestHandler;
 }
 
 /**

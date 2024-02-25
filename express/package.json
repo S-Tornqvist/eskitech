@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "build": "tsc",
-    "start": "NODE_ENV=development nodemon --config nodemon.json --exec ts-node src/server.ts"
+    "start": "NODE_ENV=development PRODUCTS_CSV=products.csv STATIC_PATH=public nodemon --config nodemon.json --exec ts-node src/server.ts"
   },
   "keywords": [],
   "author": "",
