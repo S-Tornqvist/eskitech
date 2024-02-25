@@ -1,0 +1,7 @@
+id,title,description,availability,price,shipping_country,shipping_price,gtin,brand,link,image_link
+0,Skis,Standard skis,in_stock,100 sek,SE,0 sek,123456789,Eskitech,"https://simon-tornqvist.se/eskitech","https://simon-tornqvist.se/eskitech/product_image.jpg"
+6,All Mountain Skis,Versatile skis for all types of terrain,in_stock,650 sek,SE,0 sek,6789012345678,Eskitech,https://simon-tornqvist.se/eskitech,https://simon-tornqvist.se/eskitech/product_image.jpg
+7,Racing Skis,High-speed skis for competitive racing,out_of_stock,850 sek,SE,0 sek,7890123456789,Eskitech,https://simon-tornqvist.se/eskitech,https://simon-tornqvist.se/eskitech/product_image.jpg
+8,Beginner Skis,Perfect skis for beginners and casual skiers,in_stock,300 sek,SE,0 sek,8901234567890,Eskitech,https://simon-tornqvist.se/eskitech,https://simon-tornqvist.se/eskitech/product_image.jpg
+9,Freestyle Skis,Skis designed for tricks and park skiing,in_stock,550 sek,SE,0 sek,9012345678901,Eskitech,https://simon-tornqvist.se/eskitech,https://simon-tornqvist.se/eskitech/product_image.jpg
+10,Backcountry Skis,Skis for off-piste and deep snow conditions,in_stock,700 sek,SE,0 sek,0123456789012,Eskitech,https://simon-tornqvist.se/eskitech,https://simon-tornqvist.se/eskitech/product_image.jpg
