@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@eskitech/shared": "file:../shared",
+    "bootstrap": "^5.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -24,8 +25,10 @@
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
     "babel-loader": "^9.1.3",
+    "css-loader": "^6.10.0",
     "html-webpack-plugin": "^5.6.0",
     "path-browserify": "^1.0.1",
+    "style-loader": "^3.3.4",
     "typescript": "^5.3.3",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",

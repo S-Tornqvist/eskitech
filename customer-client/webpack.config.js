@@ -14,6 +14,10 @@ module.exports = {
         test: /\.(ts|tsx|js|jsx)$/,
         use: 'babel-loader',
         exclude: /node_modules/
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
       }
     ]
   },
@@ -21,7 +25,7 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js', 'jsx']
   },
   plugins: [
-    new HtmlWebpackPlugin()
+    new HtmlWebpackPlugin({title: 'Eskitech Product Catalogue'})
   ],
   devServer: {
     static: {

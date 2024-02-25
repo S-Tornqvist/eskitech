@@ -1,20 +1,59 @@
-import React from "react";
+import React, { useEffect } from "react";
+import ProductItem from "./ProductItem";
+import ProductCard from "./ProductCard";
+
+const ORIGIN = window.location.origin;
 
 function App() {
+  const [products, setProducts] = React.useState<ProductItem[]>([]);
+
+  useEffect(() => {
+    fetch(`${ORIGIN}/api/rss`)
+      .then((response) => response.text())
+      .then(parseProducts)
+      .then((products) => {
+        setProducts(products);
+      })
+      .catch((error) => console.error("Error fetching or parsing XML:", error));
+  }, []);
+
+  console.log("products:", products);
   return (
     <div>
-      <h1>Hello from React!</h1>
-      <MyComponent color="red"/>
+      <h1> Eskitech Products: </h1>
+      {products.map((item) => (
+        <ProductCard key={item.id} product={item} />
+      ))}
     </div>
   );
 }
 
-type MyComponentProps = {
-  color?: string;
-};
+function parseProducts(xmlString: string): ProductItem[] {
+  const xmlDom = new window.DOMParser().parseFromString(xmlString, "text/xml");
 
-function MyComponent(props: MyComponentProps) {
-  return <p style={{color: props.color}}>Hello World</p>;
+  const products: ProductItem[] = Array.from(
+    xmlDom.querySelectorAll("item")
+  ).map((item) => {
+    const extract = (query: string) =>
+      item.querySelector(query)?.textContent ?? "undefined";
+    return {
+      id: extract("id"),
+      title: extract("title"),
+      description: extract("description"),
+      link: extract("link"),
+      imageLink: extract("image_link"),
+      availability: extract("availability"),
+      price: extract("price"),
+      shipping: {
+        country: extract("shipping > country"),
+        price: extract("shipping > price"),
+      },
+      gtin: extract("gtin"),
+      brand: extract("brand"),
+    };
+  });
+
+  return products;
 }
 
 export default App;
