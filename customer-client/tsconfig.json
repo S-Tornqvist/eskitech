@@ -2,19 +2,19 @@
   /* Visit https://aka.ms/tsconfig to read more about this file */
   "extends": "../tsconfig.json",
   "compilerOptions": {
-
     /* Projects */
-    "incremental": true,                              /* Save .tsbuildinfo files to allow for incremental compilation of projects. */
-    "tsBuildInfoFile": "./.tsbuildinfo",              /* Specify the path to .tsbuildinfo incremental compilation file. */
+    "incremental": true /* Save .tsbuildinfo files to allow for incremental compilation of projects. */,
+    "tsBuildInfoFile": "./.tsbuildinfo" /* Specify the path to .tsbuildinfo incremental compilation file. */,
 
     /* Language and Environment */
-    "target": "es6",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    "jsx": "react",                                   /* Specify what JSX code is generated. */
+    "target": "es6" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+    "jsx": "react" /* Specify what JSX code is generated. */,
 
     /* Modules */
-    "module": "esnext",                                /* Specify what module code is generated. */
+    "module": "esnext" /* Specify what module code is generated. */,
+    "moduleResolution": "node",
 
     /* Emit */
-    "outDir": "./build",                              /* Specify an output folder for all emitted files. */
+    "outDir": "./build" /* Specify an output folder for all emitted files. */
   }
 }
