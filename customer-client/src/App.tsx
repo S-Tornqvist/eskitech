@@ -2,7 +2,9 @@ import React, { useEffect } from "react";
 import ProductItem from "./ProductItem";
 import ProductCard from "./ProductCard";
 
-const ORIGIN = window.location.origin;
+// Tricky with subroutes for later when using react-dom. Will include
+// react route path, which is not ideal
+const ORIGIN = window.location.href;
 
 function App() {
   const [products, setProducts] = React.useState<ProductItem[]>([]);
@@ -17,7 +19,6 @@ function App() {
       .catch((error) => console.error("Error fetching or parsing XML:", error));
   }, []);
 
-  console.log("products:", products);
   return (
     <div>
       <h1> Eskitech Products: </h1>
