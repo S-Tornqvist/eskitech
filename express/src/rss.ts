@@ -12,20 +12,15 @@ export function rssFromCsv(csvPath: string): RequestHandler {
   // Set on successful csv parse
   let rss: string | null = null;
 
-  function onError(error: unknown) {
-    console.error(`ERROR parsing ${csvPath}: `, error);
-    rss = null;
-  }
-
   readCsv(csvPath)
-    .then((products) => {
-      try {
-        rss = makeRss(products).end({ pretty: true });
-      } catch (error) {
-        onError(error);
-      }
+    .then(makeRss)
+    .then((xmlDom) => {
+      rss = xmlDom.end({ pretty: true });
     })
-    .catch(onError);
+    .catch((error) => {
+      console.error(`ERROR parsing ${csvPath}: `, error);
+      rss = null;
+    });
 
   function rssRequestHandler(req: Request, res: Response) {
     if (rss === null) {
