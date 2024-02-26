@@ -20,9 +20,14 @@ function App() {
   return (
     <div>
       <h1> Eskitech Products: </h1>
-      {products.map((item) => (
-        <ProductCard key={item.id} product={item} />
-      ))}
+      <div className="eskitech-product-dashboard">
+        {products.map((item) => (
+          <ProductCard key={item.id} product={item} />
+        ))}
+      </div>
+      <footer className="eskitech-footer">
+        Photos provided by <a href="https://www.pexels.com" target="_blank">Pexels.com</a>
+      </footer>
     </div>
   );
 }

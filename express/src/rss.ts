@@ -3,34 +3,50 @@ import fs from "fs";
 import csv from "csv-parser";
 import xml from "xmlbuilder";
 
+const FALLBACK_HOST = "https://simon-tornqvist.se/eskitech";
+
 /**
  * Create a rss feed route that feeds data from csv file.
  *
  * https://en.wikipedia.org/wiki/RSS
  */
 export function rssFromCsv(csvPath: string): RequestHandler {
-  // Set on successful csv parse
-  let rss: string | null = null;
 
+  // Parse csv once on server boot
+  let products: ProductElement[] | null = null;
   readCsv(csvPath)
-    .then(makeRss)
-    .then((xmlDom) => {
-      rss = xmlDom.end({ pretty: true });
+    .then((res) => {
+      products = res;
     })
     .catch((error) => {
       console.error(`ERROR parsing ${csvPath}: `, error);
-      rss = null;
+      products = null;
     });
 
+  // Preprocess parsed csv on request
   function rssRequestHandler(req: Request, res: Response) {
-    if (rss === null) {
+    if (products === null) {
       res.sendStatus(503); // Service unavailable
     } else {
-      res.set("Content-Type", "text/xml").send(rss);
+      const rss = makeRss(
+        products.map((element) => postProcess(element, req.get("host")))
+      );
+      res.set("Content-Type", "text/xml").send(rss.end({ pretty: true }));
     }
   }
-
   return rssRequestHandler;
+}
+
+/**
+ * Postprocess product element by replacing links
+ */
+function postProcess(element: ProductElement, host?: string): ProductElement {
+  const { link, imageLink } = productLinks(element["g:id"], host);
+  return {
+    ...element,
+    "g:link": link,
+    "g:image_link": imageLink,
+  };
 }
 
 /**
@@ -61,13 +77,22 @@ function assertString(item: unknown, message?: string): asserts item is string {
   }
 }
 
+function productLinks(
+  id: string,
+  host?: string
+): { link: string; imageLink: string } {
+  const origin = `http://${host ?? FALLBACK_HOST}`;
+  return {
+    link: origin,
+    imageLink: `${origin}/product_images/${id}.jpg`,
+  };
+}
+
 function csvRowToRssElement(data: any): ProductElement {
   for (const key of [
     "id",
     "title",
     "description",
-    "link",
-    "image_link",
     "availability",
     "price",
     "shipping_country",
@@ -77,12 +102,16 @@ function csvRowToRssElement(data: any): ProductElement {
   ]) {
     assertString(data[key]);
   }
+
+  // Use fallback host. Replaced at request phase, if x-host passed.
+  const {link, imageLink} = productLinks(data.id);
+
   return {
     "g:id": data.id,
     "g:title": data.title,
     "g:description": data.description,
-    "g:link": data.link,
-    "g:image_link": data.image_link,
+    "g:link": link,
+    "g:image_link": imageLink,
     "g:availability": data.availability,
     "g:price": data.price,
     "g:shipping": {

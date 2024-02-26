@@ -7,7 +7,7 @@ export type ProductCardProps = {
 
 export default function ProductCard({ product }: ProductCardProps) {
   return (
-    <div className="card mb-3" style={{ maxWidth: "540px" }}>
+    <div className="eskitech-product-card card mb-3">
       <div className="row g-0">
         <div className="col-md-4">
           <img

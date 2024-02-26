@@ -1,0 +1,17 @@
+.eskitech-product-card {
+  width: 540px;
+}
+
+.eskitech-product-dashboard {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.eskitech-footer {
+  text-align: center;
+  margin-top: 20px;
+  padding: 10px;
+  font-size: 0.9em;
+  background-color: #f1f1f1;
+}
+
