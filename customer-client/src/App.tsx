@@ -4,7 +4,7 @@ import ProductCard from "./ProductCard";
 
 // Tricky with subroutes for later when using react-dom. Will include
 // react route path, which is not ideal
-const ORIGIN = window.location.href;
+const ORIGIN = window.location.origin;
 
 function App() {
   const [products, setProducts] = React.useState<ProductItem[]>([]);
@@ -13,9 +13,7 @@ function App() {
     fetch(`${ORIGIN}/api/rss`)
       .then((response) => response.text())
       .then(parseProducts)
-      .then((products) => {
-        setProducts(products);
-      })
+      .then(setProducts)
       .catch((error) => console.error("Error fetching or parsing XML:", error));
   }, []);
 
