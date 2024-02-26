@@ -28,8 +28,9 @@ export function rssFromCsv(csvPath: string): RequestHandler {
     if (products === null) {
       res.sendStatus(503); // Service unavailable
     } else {
+      const host = req.get("x-forwarded-host") ?? req.get("host") ?? FALLBACK_HOST;
       const rss = makeRss(
-        products.map((element) => postProcess(element, req.get("host")))
+        products.map((element) => postProcess(element, host))
       );
       res.set("Content-Type", "text/xml").send(rss.end({ pretty: true }));
     }
