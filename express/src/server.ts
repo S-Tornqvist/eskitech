@@ -31,10 +31,10 @@ api.use("*", (req, res) => {
 
 app.use("/api", api);
 
-app.get("*", express.static(STATIC_PATH));
+app.use(express.static(STATIC_PATH));
 
 app.listen(PORT, () => {
-  console.log(`[Server]: I am running at https://localhost:${PORT}`);
+  console.log(`[Server]: I am running at http://localhost:${PORT}`);
   console.log(`[Server]: Products csv: ${CSV_PATH}`)
   console.log(`[Server]: Static path: ${STATIC_PATH}`);
 });

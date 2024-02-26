@@ -3,7 +3,7 @@ import fs from "fs";
 import csv from "csv-parser";
 import xml from "xmlbuilder";
 
-const FALLBACK_HOST = "https://simon-tornqvist.se/eskitech";
+const FALLBACK_ORIGIN = "https://simon-tornqvist.se/eskitech";
 
 /**
  * Create a rss feed route that feeds data from csv file.
@@ -11,7 +11,6 @@ const FALLBACK_HOST = "https://simon-tornqvist.se/eskitech";
  * https://en.wikipedia.org/wiki/RSS
  */
 export function rssFromCsv(csvPath: string): RequestHandler {
-
   // Parse csv once on server boot
   let products: ProductElement[] | null = null;
   readCsv(csvPath)
@@ -28,9 +27,11 @@ export function rssFromCsv(csvPath: string): RequestHandler {
     if (products === null) {
       res.sendStatus(503); // Service unavailable
     } else {
-      const host = req.get("x-forwarded-host") ?? req.get("host") ?? FALLBACK_HOST;
+      const scheme = req.get("X-Forwarded-Proto") ?? "http";
+      const host = req.get("X-Forwarded-Host") ?? req.get("host");
+      const origin = host ? `${scheme}://${host}` : FALLBACK_ORIGIN;
       const rss = makeRss(
-        products.map((element) => postProcess(element, host))
+        products.map((element) => postProcess(element, origin))
       );
       res.set("Content-Type", "text/xml").send(rss.end({ pretty: true }));
     }
@@ -41,8 +42,8 @@ export function rssFromCsv(csvPath: string): RequestHandler {
 /**
  * Postprocess product element by replacing links
  */
-function postProcess(element: ProductElement, host?: string): ProductElement {
-  const { link, imageLink } = productLinks(element["g:id"], host);
+function postProcess(element: ProductElement, origin: string): ProductElement {
+  const { link, imageLink } = productLinks(element["g:id"], origin);
   return {
     ...element,
     "g:link": link,
@@ -80,9 +81,9 @@ function assertString(item: unknown, message?: string): asserts item is string {
 
 function productLinks(
   id: string,
-  host?: string
+  origin?: string
 ): { link: string; imageLink: string } {
-  const origin = `http://${host ?? FALLBACK_HOST}`;
+  origin = origin ?? FALLBACK_ORIGIN;
   return {
     link: origin,
     imageLink: `${origin}/product_images/${id}.jpg`,
@@ -105,7 +106,7 @@ function csvRowToRssElement(data: any): ProductElement {
   }
 
   // Use fallback host. Replaced at request phase, if x-host passed.
-  const {link, imageLink} = productLinks(data.id);
+  const { link, imageLink } = productLinks(data.id);
 
   return {
     "g:id": data.id,
